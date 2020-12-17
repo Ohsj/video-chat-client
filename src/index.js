@@ -1,6 +1,7 @@
 const express = require('express');
 const { createServer } = require('http');
 const path = require('path');
+const logger = require('./config/winston');
 
 /**
  *@since
@@ -14,5 +15,5 @@ const port = 3000;
 app.use(express.static(path.join(__dirname, '../views')));
 
 server.listen(port, () => {
-    console.log(`video-chat-client listening on http://localhost:${port}`);
+    logger.info(`video-chat-client listening on http://localhost:${port}`);
 });

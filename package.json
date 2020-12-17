@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/Ohsj/video-chat-client#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
