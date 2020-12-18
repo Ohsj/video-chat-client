@@ -26,8 +26,9 @@
             <p id="message" style="display: none"></p>
         </div>
 
-        <div id="video-chat-container" style="display: none">
-            <p>This will be change</p>
+        <div id="video-chat-container" class="video-position" style="display: none">
+            <video id="local-video" autoplay="autoplay"></video>
+            <video id="remote-video" autoplay="autoplay"></video>
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
