@@ -15,7 +15,8 @@ const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
 
 // Variables.
-const socket = io("localhost:5001")
+// const socket = io("localhost:5001")
+const socket = io("http://vcs.osj4532.ml")
 const mediaConstraints = {
     audio: true,
     video: { width: 1280, height: 720 },
