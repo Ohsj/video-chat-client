@@ -33,9 +33,9 @@ socket.on('room_joined', async () => {
     console.log('Socket event Callback: room_joined');
 })
 
-socket.on('full_room', async () => {
+socket.on('full_room', async (joinData) => {
     console.log('Socket event Callback: full_room')
-    showRoomSelectionConference('The room is full, please try another one')
+    showRoomSelectionConference(`The room [${joinData.roomId}] is full, please try another one`)
 })
 
 // Function.
