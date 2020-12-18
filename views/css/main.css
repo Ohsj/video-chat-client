@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+}
+
+.centered {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+table.headless tr th {
+    text-align: left;
+}
+
+table.headless tr td {
+    margin-left: 10px;
+}
+
+#connect-button {
+    height: 50px;
+}
+
+#message {
+    color: red;
+}

@@ -4,8 +4,35 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Osj's video chat</title>
+        <link href="css/main.css" rel="stylesheet">
     </head>
     <body>
-        <div>This will be change</div>
+
+        <div id="room-selection-container" class="centered">
+            <h1>Data Composition</h1>
+            <table class="headless">
+                <tbody>
+                    <tr>
+                        <th><label for="name-input">User Name</label></th>
+                        <td><input id="name-input" type="text" /></td>
+                        <td rowspan="2"><button id="connect-button">Enter</button></td>
+                    </tr>
+                    <tr>
+                        <th><label for="room-input">Room ID</label></th>
+                        <td><input id="room-input" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><p id="message" style="display: none"></p></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="video-chat-container" style="display: none">
+            <p>This will be change</p>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="scripts/index.js"></script>
     </body>
 </html>
