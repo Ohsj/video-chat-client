@@ -2,6 +2,7 @@ const express = require('express');
 const { createServer } = require('http');
 const path = require('path');
 const logger = require('./config/winston');
+const advice = require('./aop/advice');
 
 /**
  *@since
@@ -11,6 +12,8 @@ const logger = require('./config/winston');
 const app = express();
 const server = createServer(app);
 const port = 3001;
+
+app.use(advice)
 
 app.use(express.static(path.join(__dirname, '../views')));
 
