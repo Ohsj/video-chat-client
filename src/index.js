@@ -10,7 +10,7 @@ const logger = require('./config/winston');
 
 const app = express();
 const server = createServer(app);
-const port = 3000;
+const port = 3001;
 
 app.use(express.static(path.join(__dirname, '../views')));
 
