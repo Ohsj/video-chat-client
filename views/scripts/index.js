@@ -19,7 +19,7 @@ const remoteVideo = document.getElementById('remote-video');
 const socket = io("https://vcs.osj4532.ml")
 const mediaConstraints = {
     audio: true,
-    video: { width: 1280, height: 720 },
+    video: { width: 1280, height: 720, facingMode: "user" },
 }
 
 let localStream
@@ -34,11 +34,6 @@ const iceServers = {
             username: 'osj4532',
             credential: 'osj4532@123'
         }
-        // { urls: 'stun:stun.l.google.com:19302' },
-        // { urls: 'stun:stun1.l.google.com:19302' },
-        // { urls: 'stun:stun2.l.google.com:19302' },
-        // { urls: 'stun:stun3.l.google.com:19302' },
-        // { urls: 'stun:stun4.l.google.com:19302' },
     ],
 }
 
