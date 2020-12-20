@@ -30,7 +30,7 @@ let rtcPeerConnection
 
 const iceServers = {
     iceServers: [
-        { urls: 'turn:vcs.osj4532.ml',
+        { urls: 'turn:vcs.osj4532.ml:3478',
             username: 'osj4532',
             credential: 'osj4532@123'
         }
