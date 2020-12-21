@@ -22,14 +22,12 @@ const socket = io("https://vcs.osj4532.ml")
 let videoConstraints = {
     width: 1280,
     height: 720,
-    facingMode: 'user'
 }
 
 let mediaConstraints = {
     audio: true,
     video: videoConstraints,
 }
-
 
 let localStream
 let remoteStream
@@ -56,18 +54,6 @@ selector.addEventListener('change', async (e) => {
         videoConstraints.facingMode = 'user'
     } else if (e.target.value === 'back') {
         videoConstraints.facingMode = { exact: 'environment'}
-    }
-
-    if (rtcPeerConnection) {
-        const sender = rtcPeerConnection.getSenders().find(s => {
-            return s.track.kind === localStream.track.kind;
-        });
-        console.log(sender)
-
-        await setLocalStream(mediaConstraints)
-        await sender.replaceTrack(localStream)
-    } else {
-        await setLocalStream(mediaConstraints)
     }
 })
 
@@ -197,6 +183,7 @@ function setRemoteStream(event) {
 
 function addLocalTracks(rtcPeerConnection) {
     localStream.getTracks().forEach((track) => {
+        createOption(track)
         rtcPeerConnection.addTrack(track, localStream)
     });
 }
@@ -241,4 +228,11 @@ async function createAnswer(rtcPeerConnection) {
         sdp: sessionDescription,
         roomId: socketObj.roomId,
     })
+}
+
+function createOption(track) {
+    const option = document.createElement("option")
+    option.value = track.id
+    option.text = track.kind
+    selector.appendChild(option)
 }
