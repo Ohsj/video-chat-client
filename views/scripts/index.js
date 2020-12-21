@@ -9,6 +9,8 @@ const nameInput = document.getElementById('name-input');
 const roomInput = document.getElementById('room-input');
 const connectButton = document.getElementById('connect-button');
 const message = document.getElementById('message');
+const selectorContainer = document.getElementById('camera-selector-container')
+const selector = document.getElementById('mobile-camera-selector')
 
 const videoChatContainer = document.getElementById('video-chat-container');
 const localVideo = document.getElementById('local-video');
@@ -17,10 +19,17 @@ const remoteVideo = document.getElementById('remote-video');
 // Variables.
 // const socket = io("localhost:5001")
 const socket = io("https://vcs.osj4532.ml")
-const mediaConstraints = {
-    audio: true,
-    video: { width: 1280, height: 720, facingMode: "user" },
+let videoConstraints = {
+    width: 1280,
+    height: 720,
+    facingMode: 'user'
 }
+
+let mediaConstraints = {
+    audio: true,
+    video: videoConstraints,
+}
+
 
 let localStream
 let remoteStream
@@ -40,6 +49,18 @@ const iceServers = {
 // Click event.
 connectButton.addEventListener('click', () => {
     joinRoom({roomId: roomInput.value, userName: nameInput.value})
+})
+
+selector.addEventListener('change', async (e) => {
+    console.log(e.target.value)
+    if (e.target.value === 'front') {
+        videoConstraints.facingMode = 'user'
+    } else if (e.target.value === 'back') {
+        videoConstraints.facingMode = { exact: 'environment'}
+    }
+
+    mediaConstraints.video = videoConstraints
+    await setLocalStream(mediaConstraints)
 })
 
 // socket event.
@@ -129,11 +150,13 @@ function joinRoom(joinData) {
 
 function showVideoConference() {
     roomSelectionContainer.style = "display: none";
+    selectorContainer.sytle = "display: block";
     videoChatContainer.style = "display: block";
 }
 
 function showRoomSelectionConference(content) {
     roomSelectionContainer.style = "display: block";
+    selectorContainer.sytle = "display: none";
     videoChatContainer.style = "display: none";
     if (content) {
         showMessage(content)
@@ -210,4 +233,10 @@ async function createAnswer(rtcPeerConnection) {
         sdp: sessionDescription,
         roomId: socketObj.roomId,
     })
+}
+
+function stopMediaTracks(stream) {
+    stream.getTracks().forEach(track => {
+        track.stop();
+    });
 }

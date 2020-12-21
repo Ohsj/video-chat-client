@@ -49,3 +49,7 @@ table.headless tr td {
     height: 100%;
     width: 100%;
 }
+
+#camera-selector-container {
+    z-index: 100;
+}
