@@ -62,10 +62,6 @@ selector.addEventListener('change', async (e) => {
     if(rtcPeerConnection) {
         await setLocalStream(mediaConstraints)
         socket.emit('start_call', socketObj.roomId);
-    }else {
-        if (isRoomCreator) {
-            await setLocalStream(mediaConstraints)
-        }
     }
 })
 
