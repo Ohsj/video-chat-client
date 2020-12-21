@@ -61,6 +61,7 @@ selector.addEventListener('change', async (e) => {
 
     mediaConstraints.video = videoConstraints
     await setLocalStream(mediaConstraints)
+    rtcPeerConnection.ontrack = setRemoteStream;
 })
 
 // socket event.
