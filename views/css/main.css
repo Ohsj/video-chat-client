@@ -50,5 +50,12 @@ table.headless tr td {
 }
 
 #camera-selector-container {
-    z-index: 100;
+    display: none;
 }
+
+@media screen and (max-width: 1024px){
+    #camera-selector-container {
+        display: block;
+    }
+}
+

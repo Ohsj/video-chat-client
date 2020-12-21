@@ -56,6 +56,10 @@ selector.addEventListener('change', async (e) => {
     } else if (e.target.value === 'back') {
         videoConstraints.facingMode = { exact: 'environment'}
     }
+    if(rtcPeerConnection) {
+        await setLocalStream(mediaConstraints)
+        socket.emit('start_call', socketObj.roomId);
+    }
 })
 
 // socket event.
@@ -146,7 +150,7 @@ function joinRoom(joinData) {
 function showVideoConference() {
     roomSelectionContainer.style = "display: none";
     videoChatContainer.style = "display: block";
-    selectorContainer.style = "display: none";
+    // selectorContainer.style = "display: none";
 }
 
 function showRoomSelectionConference(content) {
