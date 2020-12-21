@@ -47,6 +47,7 @@ table.headless tr td {
 
 #remote-video {
     width: 100%;
+    max-height: 1000px;
 }
 
 #camera-selector-container {
