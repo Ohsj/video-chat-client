@@ -22,6 +22,7 @@ const socket = io("https://vcs.osj4532.ml")
 let videoConstraints = {
     width: 1280,
     height: 720,
+    facingMode: 'user'
 }
 
 let mediaConstraints = {
@@ -144,14 +145,14 @@ function joinRoom(joinData) {
 
 function showVideoConference() {
     roomSelectionContainer.style = "display: none";
-    selectorContainer.sytle = "display: block";
     videoChatContainer.style = "display: block";
+    selectorContainer.style = "display: none";
 }
 
 function showRoomSelectionConference(content) {
     roomSelectionContainer.style = "display: block";
-    selectorContainer.sytle = "display: none";
     videoChatContainer.style = "display: none";
+    selectorContainer.style = "display: block";
     if (content) {
         showMessage(content)
     }
@@ -183,7 +184,6 @@ function setRemoteStream(event) {
 
 function addLocalTracks(rtcPeerConnection) {
     localStream.getTracks().forEach((track) => {
-        createOption(track)
         rtcPeerConnection.addTrack(track, localStream)
     });
 }
@@ -228,11 +228,4 @@ async function createAnswer(rtcPeerConnection) {
         sdp: sessionDescription,
         roomId: socketObj.roomId,
     })
-}
-
-function createOption(track) {
-    const option = document.createElement("option")
-    option.value = track.id
-    option.text = track.kind
-    selector.appendChild(option)
 }
