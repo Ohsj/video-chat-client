@@ -50,12 +50,10 @@ table.headless tr td {
 }
 
 #camera-selector-container {
+    position: absolute;
+    top: 70%;
+    left: 15%;
+    transform: translate(-50%, -50%);
     display: none;
-}
-
-@media screen and (max-width: 1024px){
-    #camera-selector-container {
-        display: block;
-    }
 }
 

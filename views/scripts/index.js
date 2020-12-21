@@ -16,6 +16,9 @@ const videoChatContainer = document.getElementById('video-chat-container');
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
 
+// 1 = room, 2 = video
+let flag = 1
+
 // Variables.
 // const socket = io("localhost:5001")
 const socket = io("https://vcs.osj4532.ml")
@@ -45,7 +48,7 @@ const iceServers = {
     ],
 }
 
-// Click event.
+// Event Listener.
 connectButton.addEventListener('click', () => {
     joinRoom({roomId: roomInput.value, userName: nameInput.value})
 })
@@ -59,8 +62,25 @@ selector.addEventListener('change', async (e) => {
     if(rtcPeerConnection) {
         await setLocalStream(mediaConstraints)
         socket.emit('start_call', socketObj.roomId);
+    }else {
+        if (isRoomCreator) {
+            await setLocalStream(mediaConstraints)
+        }
     }
 })
+
+window.onresize = function () {
+    let throttleWidth = null;
+    setTimeout(() => {
+        throttleWidth = null;
+    }, 500);
+    throttleWidth = window.innerWidth
+    if (throttleWidth < 1025 && flag === 2) {
+        selectorContainer.style.display = "block";
+    } else if (throttleWidth > 1024 && flag === 2) {
+        selectorContainer.style.display = "none";
+    }
+}
 
 // socket event.
 socket.on('room_created', async () => {
@@ -111,7 +131,7 @@ socket.on('webrtc_offer', async (event) => {
         }
         rtcPeerConnection.ontrack = setRemoteStream;
         rtcPeerConnection.onicecandidate = sendIceCandidate;
-        rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+        await rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
         await createAnswer(rtcPeerConnection)
     }
 })
@@ -120,6 +140,7 @@ socket.on('webrtc_answer', (event) => {
     console.log('Socket event callback: webrtc_answer')
 
     rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event))
+        .then(() => {console.log('setRemoteDescription End')})
 })
 
 socket.on('webrtc_ice_candidate', (event) => {
@@ -129,7 +150,7 @@ socket.on('webrtc_ice_candidate', (event) => {
         sdpMLineIndex: event.label,
         candidate: event.candidate,
     })
-    rtcPeerConnection.addIceCandidate(candidate)
+    rtcPeerConnection.addIceCandidate(candidate).then(() => console.log('addIceCandidate end'))
 })
 
 // Function.
@@ -148,22 +169,26 @@ function joinRoom(joinData) {
 }
 
 function showVideoConference() {
-    roomSelectionContainer.style = "display: none";
-    videoChatContainer.style = "display: block";
-    // selectorContainer.style = "display: none";
+    roomSelectionContainer.style.display = "none"
+    videoChatContainer.style.display = "block";
+    if (window.innerWidth < 1025) {
+        selectorContainer.style.display = "block";
+    }
+    flag = 2;
 }
 
 function showRoomSelectionConference(content) {
-    roomSelectionContainer.style = "display: block";
-    videoChatContainer.style = "display: none";
-    selectorContainer.style = "display: block";
+    roomSelectionContainer.style.display = "block";
+    videoChatContainer.style.display = "none"
+    selectorContainer.style.display = "none";
+    flag = 1;
     if (content) {
         showMessage(content)
     }
 }
 
 function showMessage(content) {
-    message.style = "display: block;"
+    message.style.display = "block";
     message.innerText = content;
 }
 
@@ -206,7 +231,7 @@ async function createOffer(rtcPeerConnection) {
     let sessionDescription
     try {
         sessionDescription = await rtcPeerConnection.createOffer();
-        rtcPeerConnection.setLocalDescription(sessionDescription);
+        await rtcPeerConnection.setLocalDescription(sessionDescription);
     } catch (error) {
         console.error(error);
     }
@@ -222,7 +247,7 @@ async function createAnswer(rtcPeerConnection) {
     let sessionDescription
     try {
         sessionDescription = await rtcPeerConnection.createAnswer();
-        rtcPeerConnection.setLocalDescription(sessionDescription);
+        await rtcPeerConnection.setLocalDescription(sessionDescription);
     } catch (error) {
         console.error(error);
     }
