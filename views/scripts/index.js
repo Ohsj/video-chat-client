@@ -52,16 +52,23 @@ connectButton.addEventListener('click', () => {
 })
 
 selector.addEventListener('change', async (e) => {
-    console.log(e.target.value)
     if (e.target.value === 'front') {
         videoConstraints.facingMode = 'user'
     } else if (e.target.value === 'back') {
         videoConstraints.facingMode = { exact: 'environment'}
     }
 
-    mediaConstraints.video = videoConstraints
-    await setLocalStream(mediaConstraints)
-    rtcPeerConnection.ontrack = setRemoteStream;
+    if (rtcPeerConnection) {
+        const sender = rtcPeerConnection.getSenders().find(s => {
+            return s.track.kind === localStream.track.kind;
+        });
+        console.log(sender)
+
+        await setLocalStream(mediaConstraints)
+        await sender.replaceTrack(localStream)
+    } else {
+        await setLocalStream(mediaConstraints)
+    }
 })
 
 // socket event.
@@ -234,10 +241,4 @@ async function createAnswer(rtcPeerConnection) {
         sdp: sessionDescription,
         roomId: socketObj.roomId,
     })
-}
-
-function stopMediaTracks(stream) {
-    stream.getTracks().forEach(track => {
-        track.stop();
-    });
 }
