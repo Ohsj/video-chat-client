@@ -16,6 +16,9 @@ const videoChatContainer = document.getElementById('video-chat-container');
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
 
+const stateCircle = document.getElementById('calling-circle')
+const logoutButton = document.getElementById('logout')
+
 // 1 = room, 2 = video
 let flag = 1
 
@@ -38,6 +41,7 @@ let remoteStream
 let socketObj = {roomId: '', userName: ''}
 let isRoomCreator
 let rtcPeerConnection
+let interval
 
 const iceServers = {
     iceServers: [
@@ -62,7 +66,14 @@ selector.addEventListener('change', async (e) => {
     if(rtcPeerConnection) {
         await setLocalStream(mediaConstraints)
         socket.emit('start_call', socketObj.roomId);
+    }else {
+        await setLocalStream(mediaConstraints)
     }
+})
+
+logoutButton.addEventListener('click', () => {
+    stopCallingStateAnimation()
+    location.reload()
 })
 
 window.onresize = function () {
@@ -129,6 +140,7 @@ socket.on('webrtc_offer', async (event) => {
         rtcPeerConnection.onicecandidate = sendIceCandidate;
         await rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
         await createAnswer(rtcPeerConnection)
+        startCallingStateAnimation()
     }
 })
 
@@ -137,6 +149,7 @@ socket.on('webrtc_answer', (event) => {
 
     rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event))
         .then(() => {console.log('setRemoteDescription End')})
+    startCallingStateAnimation()
 })
 
 socket.on('webrtc_ice_candidate', (event) => {
@@ -147,6 +160,7 @@ socket.on('webrtc_ice_candidate', (event) => {
         candidate: event.candidate,
     })
     rtcPeerConnection.addIceCandidate(candidate).then(() => console.log('addIceCandidate end'))
+    rtcPeerConnectionEvent()
 })
 
 // Function.
@@ -167,6 +181,7 @@ function joinRoom(joinData) {
 function showVideoConference() {
     roomSelectionContainer.style.display = "none"
     videoChatContainer.style.display = "block";
+    logoutButton.style.display = 'block';
     if (window.innerWidth < 1025) {
         selectorContainer.style.display = "block";
     }
@@ -177,6 +192,7 @@ function showRoomSelectionConference(content) {
     roomSelectionContainer.style.display = "block";
     videoChatContainer.style.display = "none"
     selectorContainer.style.display = "none";
+    logoutButton.style.display = 'none';
     flag = 1;
     if (content) {
         showMessage(content)
@@ -253,4 +269,46 @@ async function createAnswer(rtcPeerConnection) {
         sdp: sessionDescription,
         roomId: socketObj.roomId,
     })
+}
+
+function startCallingStateAnimation() {
+    stateCircle.style.display = 'block';
+
+    let shown = true;
+    interval = setInterval(() => {
+        if (rtcPeerConnection) {
+            if (shown) {
+                stateCircle.style.display = 'none'
+                shown = false
+            } else {
+                stateCircle.style.display = 'block'
+                shown = true
+            }
+        } else {
+            stopCallingStateAnimation()
+        }
+    }, 500);
+    console.log('start', interval)
+}
+
+function stopCallingStateAnimation() {
+    clearInterval(interval)
+    stateCircle.style.display = 'none';
+}
+
+function rtcPeerConnectionEvent() {
+    rtcPeerConnection.onconnectionstatechange = function () {
+        switch (rtcPeerConnection.connectionState) {
+            case "disconnected":
+                stopCallingStateAnimation()
+                remoteVideo.srcObject = null
+                remoteStream.stop()
+                break;
+            case "closed":
+                stopCallingStateAnimation()
+                localVideo.srcObject = null
+                localStream.stop()
+                break;
+        }
+    }
 }

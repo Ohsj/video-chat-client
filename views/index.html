@@ -31,13 +31,16 @@
             <video id="remote-video" autoplay="autoplay" playsinline muted></video>
         </div>
 
-        <div id="camera-selector-container">
-            <label for="mobile-camera-selector">Mobile Camera Selector</label>
+        <div id="calling-circle" style="display: none"></div>
+
+        <div id="camera-selector-container" style="display: none">
             <select id="mobile-camera-selector">
                 <option value="front">front camera</option>
                 <option value="back">back camera</option>
             </select>
         </div>
+
+        <button id="logout" style="display: none">통화 종료</button>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="scripts/index.js"></script>
